@@ -3,6 +3,7 @@ package com.amazon.ata.kindlepublishingservice.dao;
 import com.amazon.ata.kindlepublishingservice.dynamodb.models.CatalogItemVersion;
 import com.amazon.ata.kindlepublishingservice.exceptions.BookNotFoundException;
 
+import com.amazon.ata.kindlepublishingservice.models.Book;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 
@@ -46,6 +47,11 @@ public class CatalogDao {
         }
         book.setInactive(true);
         this.dynamoDbMapper.save(book);
+    }
+
+    public boolean validateBookExists(String bookId) {
+        CatalogItemVersion book = getLatestVersionOfBook(bookId);
+        return book == null;
     }
 
     // Returns null if no version exists for the provided bookId
