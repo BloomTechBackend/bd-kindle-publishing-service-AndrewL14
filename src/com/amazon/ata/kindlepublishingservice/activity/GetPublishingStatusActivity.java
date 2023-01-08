@@ -29,9 +29,11 @@ public class GetPublishingStatusActivity {
             String bookId = publishingStatusItem.getBookId();
             String status = String.valueOf(publishingStatusItem.getStatus());
 
-            PublishingStatusRecord record = new PublishingStatusRecord(status, statusMessage, bookId);
-
-            records.add(record);
+            records.add(PublishingStatusRecord.builder()
+                    .withStatusMessage(statusMessage)
+                    .withBookId(bookId)
+                    .withStatus(status)
+                    .build());
         }
 
 
