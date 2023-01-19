@@ -1,0 +1,26 @@
+Goal: make is so the program processes the submitted books for publishing using multi threading(concernedly)
+Notes:
+.BookPublisher is responsible for scheduling the Runnables
+
+
+Steps:
+X1. create a new class BookPublishTask
+    1a. implement Runnable
+    1b. implement a method to processes a publish request from BookPublishRequestManager
+        2b. if no request the class should not do anything
+X2. update CatalogDao to publish books to our kindle catalog
+    2a. the method should be add a new book to the DataBase
+    note: refer to Asynchronous Book Publishing
+X3. update the Dagger code that passes a NoOpTask to the BookPublisher constructor
+    1a. once done delete the NoOpTask task and delete the test class associated with it
+4. run MT4SubmitBookForPublishingTests (make sure they pass)
+5. update BookPublishRequestManager to be thread-safe
+    note: to do this use ConcurrentLinkedQueue (it will ensure that when multiple threads are writing to the
+    que they will be added and read in the correct order
+
+
+exit checklist:
+1. implemented BookPublishTask
+2. updated BookPublishRequestManager and BookPublishRequest
+3. added unit tests to cover your new code
+4. MT4 test passes

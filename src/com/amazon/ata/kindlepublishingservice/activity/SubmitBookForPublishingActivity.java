@@ -58,7 +58,7 @@ public class SubmitBookForPublishingActivity {
         }
 
         BookPublishRequest bookPublishRequest = BookPublishRequestConverter.toBookPublishRequest(request);
-        this.manager.addBookPublishRequest(bookPublishRequest);
+        manager.addBookPublishRequest(bookPublishRequest);
 
 
         // TODO: Submit the BookPublishRequest for processing
