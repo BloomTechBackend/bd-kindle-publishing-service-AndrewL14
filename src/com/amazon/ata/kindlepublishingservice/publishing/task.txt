@@ -1,0 +1,4 @@
+1.create BookPublishRequestManager class
+2. implement the BookPublishRequestManager's AddBookPublishREquest to add a new request to the collection
+
+1.update SubmitBookForPublishingActivity to save books to our requestManger

@@ -1,1 +1,99 @@
 PARTICIPANTS: use this file for creating the class diagram in mastery task 01
+@startuml
+title remove-book
+
+package Activities {
+    class GetBookActivity {
+        - RecommendationsServiceClient recommendationServiceClient
+        - CatalogDao catalogDao
+        + GetBookActivity(CatalogDao catalogDao, RecommendationsServiceClient recommendationServiceClient)
+        + execute(final GetBookRequest request) : GetBookResponse
+    }
+
+    class GetPublishingStatusActivity {
+        + GetPublishingStatusActivity()
+        + execute(GetPublishingStatusRequest publishingStatusRequest) : GetPublishingStatusResponse
+    }
+
+    class RemoveBookFromCatalogActivity {
+        + RemoveBookFromCatalogActivity()
+        + execute(RemoveBookFromCatalogRequest removeBookFromCatalogRequest) : RemoveBookFromCatalogResponse
+    }
+
+    class SubmitBookForPublishingActivity {
+        - PublishingStatusDao publishingStatusDao
+        + SubmitBookForPublishingActivity(PublishingStatusDao publishingStatusDao)
+        + execute(SubmitBookForPublishingRequest request) : SubmitBookForPublishingResponse
+    }
+}
+
+package Client {
+    class RecommendationsServiceClient {
+        - final RecommendationsService recommendationsService
+        + RecommendationsServiceClient(RecommendationsService service)
+        + getBookRecommendations(BookGenre genre) : List<BookRecommendation>
+    }
+}
+
+package Dao {
+    class CatalogDao {
+        - dynamoDbMapper : DynamoDBMapper
+        + CatalogDao(DynamoDBMapper dynamoDbMapper)
+        + getBookFromCatalog(String bookId) : CatalogItemVersion
+        + getLatestVersionOfBook(String bookId) : CatalogItemVersion
+    }
+
+    class PublishingStatusDao {
+        - static final String ADDITIONAL_NOTES_PREFIX
+        - dynamoDBMapper : DynamoDBMapper
+        + PublishingStatusDao(DynamoDBMapper dynamoDbMapper)
+        + setPublishingStatus(String publishingRecordId,
+                                       PublishingRecordStatus publishingRecordStatus,
+                                       String bookId) : PublishingStatusItem
+        + setPublishingStatus(String publishingRecordId,
+                                        PublishingRecordStatus publishingRecordStatus,
+                                         String bookId,
+                                         String message) : PublishingStatusItem
+    }
+}
+
+package Dynamodb.Models {
+    class CatalogItemVersion {
+        - @DynamoDBHashKey bookId : String
+        - @DynamoDBRangeKey version : int
+        - inactive : boolean
+        - title : String
+        - author : String
+        - text : String
+        - genre : BookGenre
+        + POJO
+    }
+
+    class PublishingStatusItem {
+        - @DynamoDBHashKey publishingRecordId : String
+        - @DynamoDBRangeKey status : PublishingRecordStatus
+        - statusMessage : String
+        - bookId : String
+        + Getters/Setters
+    }
+}
+
+package Exceptions {
+    class BookNotFoundException extends RuntimeException {
+        - static final long serialVersionUID
+        + BookNotFoundException(String message)
+        + BookNotFoundException(String message, Throwable cause)
+    }
+    class PublishingStatusNotFoundException extends RuntimeException {
+        - static final long serialVersionUID
+        + PublishingStatusNotFoundException(String message)
+        + PublishingStatusNotFoundException(String message, Throwable cause)
+    }
+}
+CatalogItemVersion <-- CatalogDao
+GetBookActivity *-- CatalogDao
+PublishingStatusItem <-- PublishingStatusDao
+BookNotFoundException --> CatalogDao
+RecommendationsServiceClient --* GetBookActivity
+SubmitBookForPublishingActivity *-- PublishingStatusDao
+@enduml
